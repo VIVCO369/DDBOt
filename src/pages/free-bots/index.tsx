@@ -235,6 +235,46 @@ const FreeBots = observer(() => {
         ? BOTS 
         : BOTS.filter(bot => bot.category === selectedCategory);
 
+    const sanitizeXML = (xmlString: string): string => {
+        try {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+            
+            if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
+                throw new Error('Invalid XML file');
+            }
+
+            // Get list of supported blocks from Blockly
+            const blockly = (window as any).Blockly;
+            const supportedBlocks = new Set(Object.keys(blockly?.Blocks || {}));
+
+            // Get all blocks in the XML
+            const blocks = xmlDoc.querySelectorAll('block, shadow');
+            const unsupportedBlocks: string[] = [];
+
+            // Check for unsupported blocks and log them
+            blocks.forEach(block => {
+                const blockType = block.getAttribute('type');
+                if (blockType && !supportedBlocks.has(blockType)) {
+                    if (!unsupportedBlocks.includes(blockType)) {
+                        unsupportedBlocks.push(blockType);
+                    }
+                }
+            });
+
+            if (unsupportedBlocks.length > 0) {
+                console.warn(`Warning: XML contains unsupported blocks: ${unsupportedBlocks.join(', ')}`);
+            }
+
+            // Serialize back to string
+            const serializer = new XMLSerializer();
+            return serializer.serializeToString(xmlDoc);
+        } catch (error) {
+            console.error('Error sanitizing XML:', error);
+            return xmlString; // Return original if sanitization fails
+        }
+    };
+
     const loadBot = async (bot: Bot) => {
         try {
             setLoadingBotId(bot.id);
@@ -244,23 +284,38 @@ const FreeBots = observer(() => {
                 throw new Error('Failed to fetch bot file');
             }
             
-            const xmlContent = await response.text();
+            let xmlContent = await response.text();
             
+            // Sanitize XML before loading
+            xmlContent = sanitizeXML(xmlContent);
+            
+            const blockly = (window as any).Blockly;
+            
+            if (!blockly?.derivWorkspace) {
+                throw new Error('Bot Builder workspace not initialized. Please refresh the page.');
+            }
+
             await load({
                 block_string: xmlContent,
                 file_name: bot.name,
-                workspace: (window as any).Blockly?.derivWorkspace,
+                workspace: blockly.derivWorkspace,
                 from: save_types.LOCAL,
-                drop_event: null,
-                strategy_id: null,
-                showIncompatibleStrategyDialog: null,
+                drop_event: {},
+                strategy_id: bot.id,
+                showIncompatibleStrategyDialog: false,
+                show_snackbar: true,
             });
+
+            // Store the XML for later use
+            blockly.derivWorkspace.strategy_to_load = xmlContent;
 
             dashboard.setActiveTab(1);
             window.location.hash = 'bot_builder';
             
         } catch (error) {
             console.error('Error loading bot:', error);
+            const errorMsg = error instanceof Error ? error.message : 'Please try again or refresh and retry';
+            alert(`Failed to load ${bot.name}.\n\n${errorMsg}`);
         } finally {
             setLoadingBotId(null);
         }
