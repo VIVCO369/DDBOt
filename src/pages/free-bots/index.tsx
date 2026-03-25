@@ -248,23 +248,51 @@ const FreeBots = observer(() => {
             const blockly = (window as any).Blockly;
             const supportedBlocks = new Set(Object.keys(blockly?.Blocks || {}));
 
-            // Get all blocks in the XML
-            const blocks = xmlDoc.querySelectorAll('block, shadow');
-            const unsupportedBlocks: string[] = [];
+            // Common supported blocks that may be missing from the Blockly.Blocks object
+            const additionalSupportedBlocks = new Set([
+                'controls_if', 'controls_repeat', 'controls_whileUntil',
+                'logic_boolean', 'logic_compare', 'logic_operation', 'logic_ternary', 'logic_negate',
+                'math_number', 'math_arithmetic', 'math_single', 'math_change', 'math_round',
+                'math_number_property', 'math_modulo', 'math_constrain',
+                'text', 'text_join', 'text_append', 'text_length', 'text_isEmpty',
+                'text_indexOf', 'text_charAt', 'text_getSubstring', 'text_changeCase', 'text_trim',
+                'text_print', 'text_statement',
+                'variables_get', 'variables_set', 'variables_change',
+                'lists_create_empty', 'lists_create_with', 'lists_repeat', 'lists_length',
+                'lists_isEmpty', 'lists_indexOf', 'lists_getIndex', 'lists_setIndex', 'lists_getSublist',
+                'lists_split', 'lists_sort', 'lists_reverse', 'lists_statement',
+                'procedures_defnoreturn', 'procedures_defreturn', 'procedures_callnoreturn', 'procedures_callreturn',
+                'trade_definition', 'trade_definition_market', 'trade_definition_tradetype', 
+                'trade_definition_contracttype', 'trade_definition_tradeoptions', 'trade_definition_candleinterval',
+                'trade_definition_restartbuysell', 'trade_definition_restartonerror',
+                'before_purchase', 'purchase', 'after_purchase', 'during_purchase',
+                'mon_purchase', 'trade_again', 'read_details', 'contract_check_result',
+                'notify', 'total_profit', 'last_digit', 'total_runs', 'lastDigitList'
+            ]);
 
-            // Check for unsupported blocks and log them
-            blocks.forEach(block => {
-                const blockType = block.getAttribute('type');
-                if (blockType && !supportedBlocks.has(blockType)) {
-                    if (!unsupportedBlocks.includes(blockType)) {
-                        unsupportedBlocks.push(blockType);
+            const allSupportedBlocks = new Set([...supportedBlocks, ...additionalSupportedBlocks]);
+
+            // Recursively remove unsupported blocks
+            const removeUnsupported = (element: Element) => {
+                const childNodes = Array.from(element.childNodes);
+                childNodes.forEach(node => {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        const el = node as Element;
+                        const blockType = el.getAttribute('type');
+                        
+                        if ((el.tagName === 'block' || el.tagName === 'shadow') && blockType) {
+                            if (!allSupportedBlocks.has(blockType)) {
+                                console.warn(`Removing unsupported block type: ${blockType}`);
+                                el.remove();
+                                return;
+                            }
+                        }
+                        removeUnsupported(el);
                     }
-                }
-            });
+                });
+            };
 
-            if (unsupportedBlocks.length > 0) {
-                console.warn(`Warning: XML contains unsupported blocks: ${unsupportedBlocks.join(', ')}`);
-            }
+            removeUnsupported(xmlDoc.documentElement);
 
             // Serialize back to string
             const serializer = new XMLSerializer();
