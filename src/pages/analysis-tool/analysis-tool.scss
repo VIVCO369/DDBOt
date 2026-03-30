@@ -4,7 +4,118 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background: var(--general-main-1);
 
+    // ─── Tab Bar ───────────────────────────────────────────────────────────────
+    &__tabs {
+        display: flex;
+        width: 100%;
+        flex-shrink: 0;
+    }
+
+    &__tab {
+        flex: 1;
+        padding: 1.4rem 2rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        border: none;
+        cursor: pointer;
+        transition: filter 0.15s ease, opacity 0.15s ease;
+        color: #fff;
+        position: relative;
+
+        &--summary {
+            background: #1b1e6e;
+
+            &.analysis-tool__tab--active {
+                filter: brightness(1.15);
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: rgba(255, 255, 255, 0.6);
+                }
+            }
+
+            &:not(.analysis-tool__tab--active) {
+                opacity: 0.78;
+            }
+
+            &:hover {
+                filter: brightness(1.1);
+                opacity: 1;
+            }
+        }
+
+        &--analysis {
+            background: #3f51b5;
+
+            &.analysis-tool__tab--active {
+                filter: brightness(1.15);
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: rgba(255, 255, 255, 0.6);
+                }
+            }
+
+            &:not(.analysis-tool__tab--active) {
+                opacity: 0.78;
+            }
+
+            &:hover {
+                filter: brightness(1.1);
+                opacity: 1;
+            }
+        }
+
+        &--parameters {
+            background: #26a69a;
+
+            &.analysis-tool__tab--active {
+                filter: brightness(1.1);
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: rgba(255, 255, 255, 0.6);
+                }
+            }
+
+            &:not(.analysis-tool__tab--active) {
+                opacity: 0.78;
+            }
+
+            &:hover {
+                filter: brightness(1.1);
+                opacity: 1;
+            }
+        }
+    }
+
+    // ─── Content Area ──────────────────────────────────────────────────────────
+    &__content {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    // ─── Iframe (AnalysisTool tab) ─────────────────────────────────────────────
     &__iframe-container {
         flex: 1;
         width: 100%;
@@ -21,5 +132,389 @@
         height: 100%;
         border: none;
         display: block;
+    }
+
+    // ─── Summary Tab ──────────────────────────────────────────────────────────
+    &__summary {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    &__summary-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+        gap: 1.6rem;
+    }
+
+    &__stat-card {
+        background: var(--general-section-1);
+        border: 1px solid var(--general-section-3, #e8e8e8);
+        border-radius: 1.2rem;
+        padding: 1.6rem;
+        display: flex;
+        align-items: center;
+        gap: 1.4rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.15s, box-shadow 0.15s;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    &__stat-icon {
+        font-size: 2.6rem;
+        flex-shrink: 0;
+    }
+
+    &__stat-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    &__stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text-general);
+        line-height: 1.1;
+    }
+
+    &__stat-label {
+        font-size: 1.1rem;
+        color: var(--text-less-prominent);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    &__stat-change {
+        font-size: 1.1rem;
+        font-weight: 600;
+
+        &--positive { color: #4caf50; }
+        &--negative { color: #f44336; }
+    }
+
+    &__summary-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+
+        @media (max-width: 900px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__panel {
+        background: var(--general-section-1);
+        border: 1px solid var(--general-section-3, #e8e8e8);
+        border-radius: 1.2rem;
+        overflow: hidden;
+    }
+
+    &__panel-title {
+        padding: 1.4rem 1.8rem;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-general);
+        background: var(--general-section-2, #f9f9f9);
+        border-bottom: 1px solid var(--general-section-3, #e8e8e8);
+        margin: 0;
+    }
+
+    &__market-table {
+        padding: 0;
+    }
+
+    &__table-head {
+        display: grid;
+        grid-template-columns: 2fr 1.2fr 0.8fr 1.8fr 1fr;
+        padding: 0.8rem 1.6rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-less-prominent);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        border-bottom: 1px solid var(--general-section-3, #e8e8e8);
+        background: var(--general-section-2, #fafafa);
+    }
+
+    &__table-row {
+        display: grid;
+        grid-template-columns: 2fr 1.2fr 0.8fr 1.8fr 1fr;
+        padding: 1rem 1.6rem;
+        font-size: 1.25rem;
+        align-items: center;
+        border-bottom: 1px solid var(--general-section-3, #f0f0f0);
+
+        &:last-child { border-bottom: none; }
+        &:hover { background: var(--general-section-2, #fafafa); }
+    }
+
+    &__symbol {
+        font-weight: 600;
+        color: var(--text-general);
+        font-size: 1.1rem;
+    }
+
+    &__trend {
+        font-size: 1.1rem;
+        font-weight: 600;
+
+        &--bullish { color: #4caf50; }
+        &--bearish { color: #f44336; }
+        &--neutral { color: #ff9800; }
+    }
+
+    &__signal {
+        display: inline-block;
+        padding: 0.2rem 0.8rem;
+        border-radius: 0.4rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-align: center;
+
+        &--buy {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+        }
+
+        &--sell {
+            background: rgba(244, 67, 54, 0.15);
+            color: #f44336;
+        }
+
+        &--wait {
+            background: rgba(255, 152, 0, 0.15);
+            color: #ff9800;
+        }
+    }
+
+    &__confidence {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-size: 1.1rem;
+        color: var(--text-less-prominent);
+    }
+
+    &__confidence-bar {
+        flex: 1;
+        height: 0.5rem;
+        background: var(--general-section-3, #e8e8e8);
+        border-radius: 99px;
+        overflow: hidden;
+    }
+
+    &__confidence-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3f51b5, #26a69a);
+        border-radius: 99px;
+        transition: width 0.4s ease;
+    }
+
+    &__price {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--text-general);
+        font-family: monospace;
+    }
+
+    &__history {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__history-row {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr 0.8fr 0.9fr 0.9fr;
+        padding: 1rem 1.6rem;
+        font-size: 1.2rem;
+        align-items: center;
+        border-bottom: 1px solid var(--general-section-3, #f0f0f0);
+
+        &:last-child { border-bottom: none; }
+        &:hover { background: var(--general-section-2, #fafafa); }
+
+        &--win { border-left: 3px solid #4caf50; }
+        &--loss { border-left: 3px solid #f44336; }
+    }
+
+    &__history-time {
+        font-family: monospace;
+        font-size: 1.1rem;
+        color: var(--text-less-prominent);
+    }
+
+    &__history-pair {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    &__history-result {
+        font-weight: 700;
+        font-size: 1.2rem;
+
+        &--win { color: #4caf50; }
+        &--loss { color: #f44336; }
+    }
+
+    &__history-profit {
+        font-weight: 700;
+        font-family: monospace;
+        font-size: 1.2rem;
+    }
+
+    &__positive { color: #4caf50; }
+    &__negative { color: #f44336; }
+
+    // ─── Trading Parameters Tab ───────────────────────────────────────────────
+    &__parameters {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2.4rem;
+    }
+
+    &__params-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    &__params-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text-general);
+    }
+
+    &__params-desc {
+        font-size: 1.3rem;
+        color: var(--text-less-prominent);
+        line-height: 1.5;
+    }
+
+    &__params-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__param-section {
+        background: var(--general-section-1);
+        border: 1px solid var(--general-section-3, #e8e8e8);
+        border-radius: 1.2rem;
+        overflow: hidden;
+    }
+
+    &__section-title {
+        padding: 1.4rem 1.8rem;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-general);
+        background: var(--general-section-2, #f9f9f9);
+        border-bottom: 1px solid var(--general-section-3, #e8e8e8);
+        margin: 0;
+    }
+
+    &__param-fields {
+        padding: 1.6rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.4rem;
+    }
+
+    &__param-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-general);
+        }
+
+        input,
+        select {
+            padding: 0.9rem 1.2rem;
+            border: 1.5px solid var(--general-section-3, #d1d5db);
+            border-radius: 0.7rem;
+            font-size: 1.3rem;
+            background: var(--general-main-1);
+            color: var(--text-general);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+
+            &:focus {
+                outline: none;
+                border-color: #3f51b5;
+                box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.12);
+            }
+        }
+    }
+
+    &__params-actions {
+        display: flex;
+        gap: 1.4rem;
+        justify-content: flex-end;
+        padding-bottom: 1rem;
+    }
+
+    &__btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 1.1rem 2.8rem;
+        border-radius: 0.8rem;
+        font-size: 1.4rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+
+        &--reset {
+            background: var(--general-section-2, #f5f5f5);
+            color: var(--text-general);
+            border: 1.5px solid var(--general-section-3, #d1d5db);
+
+            &:hover {
+                background: var(--general-section-3, #e8e8e8);
+            }
+        }
+
+        &--save {
+            background: #3f51b5;
+            color: #fff;
+
+            &:hover {
+                background: #303f9f;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(63, 81, 181, 0.35);
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+        }
+
+        &--saved {
+            background: #4caf50 !important;
+
+            &:hover {
+                background: #388e3c !important;
+            }
+        }
     }
 }
