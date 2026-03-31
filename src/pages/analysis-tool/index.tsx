@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
+import KingOfMatches from './king-of-matches';
 import './analysis-tool.scss';
 
 type TTab = 'summary' | 'analysis' | 'parameters';
@@ -164,14 +165,8 @@ const AnalysisTool = observer(() => {
                 )}
 
                 {activeTab === 'analysis' && (
-                    <div className='analysis-tool__iframe-container'>
-                        <iframe
-                            src='https://bot-analysis-tool-belex.web.app'
-                            className='analysis-tool__iframe'
-                            title='Bot Analysis Tool'
-                            allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                            allowFullScreen
-                        />
+                    <div className='analysis-tool__kom-container'>
+                        <KingOfMatches />
                     </div>
                 )}
 
