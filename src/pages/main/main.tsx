@@ -38,6 +38,8 @@ const Tutorial = lazy(() => import('../tutorials'));
 const FreeBots = lazy(() => import('../free-bots'));
 const AnalysisTool = lazy(() => import('../analysis-tool'));
 const PremiumTools = lazy(() => import('../premium-tools'));
+const DTrader = lazy(() => import('../d-trader'));
+const Matches = lazy(() => import('../matches'));
 const CopyTrade = lazy(() => import('../copy-trade'));
 
 const AppWrapper = observer(() => {
@@ -70,7 +72,7 @@ const AppWrapper = observer(() => {
     const { clear } = summary_card;
     const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
     const init_render = React.useRef(true);
-    const hash = ['dashboard', 'bot_builder', 'free_bots', 'analysis_tool', 'premium_tools', 'copy_trade', 'chart', 'tutorial'];
+    const hash = ['dashboard', 'bot_builder', 'free_bots', 'analysis_tool', 'premium_tools', 'd_trader', 'matches', 'copy_trade', 'chart', 'tutorial'];
     const { isDesktop } = useDevice();
     const location = useLocation();
     const navigate = useNavigate();
@@ -373,6 +375,52 @@ const AppWrapper = observer(() => {
                                         }
                                     >
                                         <PremiumTools />
+                                    </Suspense>
+                                </div>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedChartLineCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='D-Trader' />
+                                    </>
+                                }
+                                id='id-d-trader'
+                            >
+                                <div className='d-trader-wrapper'>
+                                    <Suspense
+                                        fallback={
+                                            <ChunkLoader message={localize('Please wait, loading D-Trader...')} />
+                                        }
+                                    >
+                                        <DTrader />
+                                    </Suspense>
+                                </div>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedObjectsColumnCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Matches' />
+                                    </>
+                                }
+                                id='id-matches'
+                            >
+                                <div className='matches-wrapper'>
+                                    <Suspense
+                                        fallback={
+                                            <ChunkLoader message={localize('Please wait, loading matches...')} />
+                                        }
+                                    >
+                                        <Matches />
                                     </Suspense>
                                 </div>
                             </div>
